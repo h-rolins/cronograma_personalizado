@@ -31,4 +31,4 @@ const registerUser = async (nome, email, senha) => {
 };
 
 // Exemplo de uso: Registrar um usuário
-//registerUser('João Silva', 'joao.silva@example.com', 'senha123');
+registerUser('João Silva', 'joao.silva@example.com', 'senha123');
