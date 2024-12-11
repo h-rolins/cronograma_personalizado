@@ -24,11 +24,72 @@ const registrarEvento = async (titulo, data, hora, disponibilidade, id_user) => 
     }
   };
   
-  // Exemplo de chamada para registrar um evento
+const atualizarEvento = async (id, titulo, data, hora, disponibilidade) => {
+  const connection = await createConnection();
+
+  if (!id || !titulo || !data || !hora || !disponibilidade) {
+      console.log('Todos os campos são obrigatórios');
+      return;
+  }
+
+  try {
+      const [result] = await connection.query(
+          'UPDATE evento SET titulo = ?, data = ?, hora = ?, disponibilidade = ? WHERE id = ?',
+          [titulo, data, hora, disponibilidade, id]
+      );
+
+      if (result.affectedRows > 0) {
+          console.log('Evento atualizado com sucesso, ID:', id);
+      } else {
+          console.log('Nenhum evento encontrado com o ID fornecido:', id);
+      }
+  } catch (err) {
+      console.error('Erro ao atualizar evento:', err.message);
+  } finally {
+      await connection.end();
+  }
+};
+
+const deletarEvento = async (id) => {
+  const connection = await createConnection();
+
+  if (!id) {
+      console.log('ID do evento é obrigatório');
+      return;
+  }
+
+  try {
+      const [result] = await connection.query(
+          'DELETE FROM evento WHERE id = ?',
+          [id]
+      );
+
+      if (result.affectedRows > 0) {
+          console.log('Evento deletado com sucesso, ID:', id);
+      } else {
+          console.log('Nenhum evento encontrado com o ID fornecido:', id);
+      }
+  } catch (err) {
+      console.error('Erro ao deletar evento:', err.message);
+  } finally {
+      await connection.end();
+  }
+};
+  
  /*registrarEvento(
-    'Aniversário Luisa',        // título
-    '2024-12-18',             // data
-    '15:00',                  // hora
-    'Não',            // disponibilidade
+    'Dentista',        // título
+    '2024-12-21',             // data
+    '9:00',                  // hora
+    'Sim',            // disponibilidade
     1                          // id_user
-  );*/
+  );
+  
+atualizarEvento(
+    1,                  // id
+    'Reunião COPESE',        // título
+    '2024-12-14',       // data
+    '14:00',            // hora
+    'Sim'              // disponibilidade
+);*/
+
+deletarEvento(3); // id
