@@ -1,4 +1,4 @@
-const { subDays, addDays, format } = require('date-fns');
+const { subDays, format } = require('date-fns');
 const { ptBR } = require('date-fns/locale');
 const createConnection = require('C:/xampp/htdocs/cronograma_personalizado/connection.js');
 
@@ -18,14 +18,13 @@ const gerarCronograma = async (id_user, id_tarefa) => {
         }
 
         const tarefa = tarefas[0];
-        console.log('Informações da tarefa:', tarefa);
+        const tarefaData = new Date(tarefa.data);
 
         // Buscar disponibilidade do usuário
         const [disponibilidade] = await connection.query(
             'SELECT dia, turno FROM disponibilidade WHERE id_user = ? AND disponibilidade = ?',
             [id_user, 'livre']
         );
-        console.log('Turnos livres encontrados:', disponibilidade);
 
         if (disponibilidade.length === 0) {
             console.log('Nenhuma disponibilidade encontrada para o usuário.');
@@ -39,42 +38,22 @@ const gerarCronograma = async (id_user, id_tarefa) => {
         );
 
         const diasIndisponiveis = eventos.map(evento => ({ dia: evento.data, turno: evento.turno }));
-        console.log('Dias indisponíveis:', diasIndisponiveis);
 
-        // Montar o cronograma com base na tarefa
-        const { data, conteudo } = tarefa;
-        const tarefaData = new Date(data);
-        const conteudos = conteudo.split(',').map(c => c.trim());
+        const conteudos = tarefa.conteudo.split(',').map(c => c.trim());
         const cronograma = [];
 
-        console.log(`Conteúdos a alocar: ${conteudos.join(', ')}`); // Depuração
+        console.log(`Conteúdos a alocar: ${conteudos.join(', ')}`);
 
-        // Função para encontrar todos os turnos livres anteriores e seguintes
         const encontrarTurnosLivres = () => {
             const turnosLivres = [];
             let i = 0;
 
-            // Buscar turnos livres para os dias anteriores
-            while (i < 7) {
+            while (i < 7 && turnosLivres.length < conteudos.length) {
                 const diaAnterior = subDays(tarefaData, i);
+
                 const diaSemana = format(diaAnterior, 'eeee', { locale: ptBR }).toLowerCase();
+
                 const diaString = format(diaAnterior, 'yyyy-MM-dd');
-
-                const turnosLivresDoDia = disponibilidade.filter(d => d.dia === diaSemana);
-                for (const turnoLivre of turnosLivresDoDia) {
-                    if (!diasIndisponiveis.some(e => e.dia === diaString && e.turno === turnoLivre.turno)) {
-                        turnosLivres.push({ dia: diaString, turno: turnoLivre.turno });
-                    }
-                }
-                i++;
-            }
-
-            // Buscar turnos livres para os dias seguintes
-            i = 1; // A partir do dia seguinte
-            while (turnosLivres.length < conteudos.length) {
-                const diaSeguinte = addDays(tarefaData, i);
-                const diaSemana = format(diaSeguinte, 'eeee', { locale: ptBR }).toLowerCase();
-                const diaString = format(diaSeguinte, 'yyyy-MM-dd');
 
                 const turnosLivresDoDia = disponibilidade.filter(d => d.dia === diaSemana);
                 for (const turnoLivre of turnosLivresDoDia) {
@@ -87,11 +66,9 @@ const gerarCronograma = async (id_user, id_tarefa) => {
             return turnosLivres;
         };
 
-        // Obter todos os turnos livres
         const turnosLivres = encontrarTurnosLivres();
         console.log('Turnos livres encontrados para alocação:', turnosLivres);
 
-        // Alocar os conteúdos nos turnos livres
         let conteudosAlocados = 0;
         for (let i = 0; i < turnosLivres.length && conteudosAlocados < conteudos.length; i++) {
             const turnoLivre = turnosLivres[i];
@@ -103,7 +80,13 @@ const gerarCronograma = async (id_user, id_tarefa) => {
                 turno: turnoLivre.turno
             });
 
-            console.log(`Alocado: ${conteudoAtual} no dia ${turnoLivre.dia}, turno ${turnoLivre.turno}`); // Depuração
+            // Salvar no banco de dados
+            await connection.query(
+                'INSERT INTO cronograma (turno, data, conteudo, id_user) VALUES (?, ?, ?, ?)',
+                [turnoLivre.turno, turnoLivre.dia, conteudoAtual, id_user]
+            );
+
+            console.log(`Alocado: ${conteudoAtual} no dia ${turnoLivre.dia}, turno ${turnoLivre.turno}`);
             conteudosAlocados++;
         }
 
