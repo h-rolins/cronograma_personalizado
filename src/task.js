@@ -1,9 +1,9 @@
 const createConnection = require('C:/xampp/htdocs/cronograma_personalizado/connection.js'); 
 
-const registrarTarefa = async (titulo, data, hora, disciplina, prioridade, conteudo, id_user) => {
+const registrarTarefa = async (titulo, data, turno, disciplina, conteudo, id_user) => {
     const connection = await createConnection();
 
-    if (!titulo || !data || !hora || !disciplina || !prioridade || !conteudo || !id_user) {
+    if (!titulo || !data || !turno || !disciplina || !conteudo || !id_user) {
       console.log('Todos os campos são obrigatórios');
       return;
     }
@@ -11,8 +11,8 @@ const registrarTarefa = async (titulo, data, hora, disciplina, prioridade, conte
     try {
   
       const [result] = await connection.query(
-            'INSERT INTO tarefa (titulo, data, hora, disciplina, prioridade, conteudo, id_user) VALUES (?, ?, ?, ?, ?, ?, ?)',
-            values = [titulo, data, hora, disciplina, prioridade, conteudo, id_user]
+            'INSERT INTO tarefa (titulo, data, turno, disciplina,  conteudo, id_user) VALUES (?, ?, ?, ?, ?, ?)',
+            values = [titulo, data, turno, disciplina,  conteudo, id_user]
         ); 
 
 
@@ -24,25 +24,24 @@ const registrarTarefa = async (titulo, data, hora, disciplina, prioridade, conte
     }
   };
 
-
-const atualizarTarefa = async (id, titulo, data, hora, disciplina, prioridade, conteudo) => {
+const atualizarTarefa = async (id_tarefa, titulo, data, turno, disciplina,  conteudo) => {
   const connection = await createConnection();
 
-  if (!id || !titulo || !data || !hora || !disciplina || !prioridade || !conteudo) {
+  if (!id_tarefa || !titulo || !data || !turno || !disciplina || !conteudo) {
       console.log('Todos os campos são obrigatórios');
       return;
   }
 
   try {
       const [result] = await connection.query(
-          'UPDATE tarefa SET titulo = ?, data = ?, hora = ?, disciplina = ?, prioridade = ?, conteudo = ? WHERE id = ?',
-          [titulo, data, hora, disciplina, prioridade, conteudo, id]
+          'UPDATE tarefa SET titulo = ?, data = ?, turno = ?, disciplina = ?, conteudo = ? WHERE id_tarefa = ?',
+          [titulo, data, turno, disciplina,  conteudo, id_tarefa]
       );
 
       if (result.affectedRows > 0) {
-          console.log('Tarefa atualizada com sucesso, ID:', id);
+          console.log('Tarefa atualizada com sucesso, ID:', id_tarefa);
       } else {
-          console.log('Nenhuma tarefa encontrada com o ID fornecido:', id);
+          console.log('Nenhuma tarefa encontrada com o ID fornecido:', id_tarefa);
       }
   } catch (err) {
       console.error('Erro ao atualizar tarefa:', err.message);
@@ -51,24 +50,24 @@ const atualizarTarefa = async (id, titulo, data, hora, disciplina, prioridade, c
   }
 };
 
-const deletarTarefa = async (id) => {
+const deletarTarefa = async (id_tarefa) => {
   const connection = await createConnection();
 
-  if (!id) {
+  if (!id_tarefa) {
       console.log('ID da tarefa é obrigatório');
       return;
   }
 
   try {
       const [result] = await connection.query(
-          'DELETE FROM tarefa WHERE id = ?',
-          [id]
+          'DELETE FROM tarefa WHERE id_tarefa = ?',
+          [id_tarefa]
       );
 
       if (result.affectedRows > 0) {
-          console.log('Tarefa deletada com sucesso, ID:', id);
+          console.log('Tarefa deletada com sucesso, ID:', id_tarefa);
       } else {
-          console.log('Nenhuma tarefa encontrada com o ID fornecido:', id);
+          console.log('Nenhuma tarefa encontrada com o ID fornecido:', id_tarefa);
       }
   } catch (err) {
       console.error('Erro ao deletar tarefa:', err.message);
@@ -76,26 +75,52 @@ const deletarTarefa = async (id) => {
       await connection.end();
   }
 };
-  
-  // Exemplo de chamada para registrar uma tarefa
-  /*registrarTarefa(
-    'Prova ED1',        // título
-    '2024-12-01',             // data
-    '15:00',                  // hora
-    'ED1',            // disciplina
-    'Alta',                   // prioridade
-    'Estudar pilha', // conteúdo
-    1                          // id_user
-  );*/
 
-/*atualizarTarefa(
-    6,                  // id
-    'Prova ED2',        // título
-    '2024-12-05',       // data
-    '14:00',            // hora
-    'ED2',              // disciplina
-    'Alta',             // prioridade
-    'Estudar filas'     // conteúdo
+const lerTarefas = async (id_user) => {
+    const connection = await createConnection();
+
+    if (!id_user) {
+        console.log('ID do usuário é obrigatório');
+        return;
+    }
+
+    try {
+        const [rows] = await connection.query(
+            'SELECT * FROM tarefa WHERE id_user = ?',
+            [id_user]
+        );
+
+        if (rows.length > 0) {
+            console.log('Tarefas encontradas:', rows);
+        } else {
+            console.log('Nenhuma tarefa encontrada para o ID do usuário:', id_user);
+        }
+    } catch (err) {
+        console.error('Erro ao ler tarefas:', err.message);
+    } finally {
+        await connection.end();
+    }
+};
+
+/*
+lerTarefas(6); 
+
+registrarTarefa(
+    'Seminário Literatura',        // título
+    '2025-02-19',             // data
+    'manha',                  // turno
+    'Literatura',            // disciplina
+    'Revisão, 1ª geração modernismo, 2ª geração modernismo, 3ª geração modernismo', // conteúdo
+    6                          // id_user
+  );
+
+atualizarTarefa(
+    8,                  // id
+    'Seminário Literatura',        // título
+    '2025-02-17',       // data
+    'tarde',            // turno
+    'Literatura',            // disciplina
+    'Revisão, 1ª geração modernismo, 2ª geração modernismo, 3ª geração modernismo', // conteúdo
 );
 
-deletarTarefa(5); // id*/
+deletarTarefa(9); // id*/

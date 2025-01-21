@@ -103,5 +103,35 @@ const gerarCronograma = async (id_user, id_tarefa) => {
     }
 };
 
-// Exemplo de chamada
-gerarCronograma(1, 7);
+const mostrarCronogramas = async (id_user) => {
+    const connection = await createConnection();
+
+    try {
+        // Buscar cronogramas do usuário
+        const [cronogramas] = await connection.query(
+            'SELECT id_cronograma, turno, data, conteudo FROM cronograma WHERE id_user = ? ORDER BY data, turno',
+            [id_user]
+        );
+
+        if (cronogramas.length === 0) {
+            console.log('Nenhum cronograma encontrado para o usuário.');
+            return;
+        }
+
+        console.log(`Cronogramas do usuário ${id_user}:`);
+        cronogramas.forEach((cronograma) => {
+            console.log(`ID: ${cronograma.id_cronograma}`);
+            console.log(`Data: ${cronograma.data}`);
+            console.log(`Turno: ${cronograma.turno}`);
+            console.log(`Conteúdo: ${cronograma.conteudo}`);
+            console.log('-----------------------');
+        });
+    } catch (err) {
+        console.error('Erro ao buscar cronogramas:', err.message);
+    } finally {
+        await connection.end();
+    }
+};
+
+// gerarCronograma(6, 8);
+// mostrarCronogramas(6);
