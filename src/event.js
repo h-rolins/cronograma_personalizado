@@ -102,23 +102,23 @@ const lerEventos = async (id_user) => {
     }
 };
 
-/*
-lerEventos(6); 
 
+lerEventos(7); 
+/*
 registrarEvento(
-    'Aniversário Luisa',        // título
-    '2025-02-14',             // data
+    'Aniversário Paulo',        // título
+    '2025-02-02',             // data
     'tarde',                  // turno
     'nao',            // disponibilidade
-    6                          // id_user
+    7                          // id_user
   );
  
 atualizarEvento(
-    5,                  // id
-    'Aniversário Luisa',        // título
-    '2025-02-15',             // data
-    'tarde',                  // turno
+    7,                  // id
+    'Aniversário Paulo Augusto',        // título
+    '2025-02-01',             // data
+    'noite',                  // turno
     'nao',            // disponibilidade
-);  
+); 
 
-deletarEvento(6); // id*/
+deletarEvento(7); // id*/ 

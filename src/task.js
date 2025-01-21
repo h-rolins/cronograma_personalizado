@@ -102,25 +102,25 @@ const lerTarefas = async (id_user) => {
     }
 };
 
-/*
-lerTarefas(6); 
 
-registrarTarefa(
-    'Seminário Literatura',        // título
-    '2025-02-19',             // data
-    'manha',                  // turno
-    'Literatura',            // disciplina
-    'Revisão, 1ª geração modernismo, 2ª geração modernismo, 3ª geração modernismo', // conteúdo
-    6                          // id_user
+//lerTarefas(7); 
+
+ /*registrarTarefa(
+    'Prova de Matemática',       // título
+    '2025-03-05',                // data
+    'tarde',                     // turno
+    'Matemática',                // disciplina
+    'Funções, Derivadas, Integrais, Limites', // conteúdo
+     7                          // id_user
   );
 
-atualizarTarefa(
-    8,                  // id
-    'Seminário Literatura',        // título
-    '2025-02-17',       // data
-    'tarde',            // turno
-    'Literatura',            // disciplina
-    'Revisão, 1ª geração modernismo, 2ª geração modernismo, 3ª geração modernismo', // conteúdo
-);
+ atualizarTarefa(
+    10,                  // id
+    'Prova de Calculo',       // título
+    '2025-03-04',                // data
+    'tarde',                     // turno
+    'Calculo',                // disciplina
+    'Funções, Derivadas, Integrais, Limites', // conteúdo
+);*/
 
-deletarTarefa(9); // id*/
+deletarTarefa(1); // id

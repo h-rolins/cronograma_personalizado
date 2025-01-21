@@ -133,5 +133,5 @@ const mostrarCronogramas = async (id_user) => {
     }
 };
 
-// gerarCronograma(6, 8);
-// mostrarCronogramas(6);
+// gerarCronograma(7, 10);
+// mostrarCronogramas(7);

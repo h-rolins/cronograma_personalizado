@@ -100,41 +100,41 @@ const lerDisponibilidade = async (id_user) => {
     }
 };
 
-/*lerDisponibilidade(6); 
+/*lerDisponibilidade(7); 
 
 salvarDisponibilidade(
-    'terca-feira',         // dia
+    'terça-feira',         // dia
     'tarde',           // turno
     'livre',         // disponibilidade
-    6                  // id_user
+    7                  // id_user
 );
 
 salvarDisponibilidade(
     'quarta-feira',         // dia
     'tarde',           // turno
     'livre',         // disponibilidade
-    6                  // id_user
+    7                  // id_user
 );
 
 salvarDisponibilidade(
     'quinta-feira',         // dia
     'tarde',           // turno
     'livre',         // disponibilidade
-    6                  // id_user
+    7                  // id_user
 );
 
 salvarDisponibilidade(
     'sabado',         // dia
     'tarde',           // turno
     'livre',         // disponibilidade
-    6                  // id_user
+    7                  // id_user
 );
 
 atualizarDisponibilidade(
-    11,                  // id
+    17,                  // id
     'segunda-feira',    // dia
     'tarde',            // turno
     'livre'             // disponibilidade
 );
 
-deletarDisponibilidade(16); // id*/
+deletarDisponibilidade(9); // id*/
